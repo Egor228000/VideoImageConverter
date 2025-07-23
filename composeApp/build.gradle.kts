@@ -14,9 +14,12 @@ kotlin {
         val desktopMain by getting
         
         commonMain.dependencies {
+
+            implementation("org.bytedeco:ffmpeg-platform:7.1.1-1.5.12")
+            implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
+            implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -39,9 +42,30 @@ compose.desktop {
         mainClass = "org.example.project.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.project"
+            targetFormats(TargetFormat.Exe,  TargetFormat.Deb)
+            packageName = "VideoImageConverterPublic"
             packageVersion = "1.0.0"
+            windows {
+                packageVersion = "1.0.0"
+                exePackageVersion = "1.0.0"
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icons.ico"))
+            }
+            linux {
+                packageVersion = "1.0.0"
+                debPackageVersion = "1.0.0"
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icons.ico"))
+
+            }
+            includeAllModules = true
+
+
+        }
+
+        buildTypes.release.proguard {
+            isEnabled.set(false)
+            optimize.set(true)
+            obfuscate.set(false)
         }
     }
+
 }
