@@ -51,7 +51,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
     var openListVideo = remember { mutableStateOf(false) }
     val selectedFormatImage = remember { mutableStateOf("jpeg") }
     val selectedFormatVideo = remember { mutableStateOf("mp4") }
-    var selectedFolder by remember { mutableStateOf("C:\\Users\\egork\\Downloads\\Telegram Desktop\\asd") }
+    var selectedFolder by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val stateVertical = rememberScrollState(0)
 
