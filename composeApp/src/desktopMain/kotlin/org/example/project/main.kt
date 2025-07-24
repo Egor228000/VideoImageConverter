@@ -13,6 +13,9 @@ import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
+import org.jetbrains.compose.resources.painterResource
+import videoimageconverter.composeapp.generated.resources.Res
+import videoimageconverter.composeapp.generated.resources.icon
 import java.awt.Dimension
 
 fun main() = application {
@@ -24,6 +27,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "VideoImageConverter",
         state = state,
+        icon = painterResource(Res.drawable.icon)
 
     ) {
         WindowStyle(
