@@ -74,64 +74,63 @@ class AppViewModel(): ViewModel() {
 
 
 
-
     fun convertImageSimple(inputFile: File, outputFile: File) {
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR)
+        try {
+            val image: BufferedImage = ImageIO.read(inputFile)
+                ?: error("Cannot read image ${inputFile.name}")
 
-        val frame = when (inputFile.extension.lowercase()) {
-            "gif" -> {
-                FFmpegFrameGrabber(inputFile.absolutePath).use { grabber ->
-                    grabber.format = "gif"
-                    grabber.start()
-                    val f = grabber.grabImage()
-                    grabber.stop()
-                    f ?: error("Cannot grab frame from GIF ${inputFile.name}")
-                }
-            }
-            else -> {
-                val img: BufferedImage = ImageIO.read(inputFile)
-                    ?: error("Cannot read image ${inputFile.name}")
-                Java2DFrameConverter().convert(img)
-            }
-        }
+            println("Successfully read image: ${inputFile.absolutePath}")
 
-        FFmpegFrameRecorder(outputFile.absolutePath, frame.imageWidth, frame.imageHeight).use { recorder ->
             val outExt = outputFile.extension.lowercase()
-            recorder.format = outExt
-            recorder.frameRate = 1.0
+            println("Saving image as: $outExt")
 
-            when (outExt) {
+            val isSaved = when (outExt) {
                 "jpg", "jpeg" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_MJPEG
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_YUVJ420P
+                    println("Attempting to save as JPEG...")
+                    ImageIO.write(image, "JPEG", outputFile)
                 }
                 "png" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_PNG
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_RGB24
+                    println("Attempting to save as PNG...")
+                    ImageIO.write(image, "PNG", outputFile)
                 }
                 "gif" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_GIF
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_RGB8
-                    recorder.setVideoOption("loop", "0")
+                    println("Attempting to save as GIF...")
+                    ImageIO.write(image, "GIF", outputFile)
                 }
                 "tiff", "tif" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_TIFF
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_RGB24
-                }
-                "webp" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_WEBP
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_YUVA420P
+                    println("Attempting to save as TIFF...")
+                    ImageIO.write(image, "TIFF", outputFile)
                 }
                 "bmp" -> {
-                    recorder.videoCodec   = avcodec.AV_CODEC_ID_BMP
-                    recorder.pixelFormat  = avutil.AV_PIX_FMT_RGB24
+                    println("Attempting to save as BMP...")
+                    ImageIO.write(image, "BMP", outputFile)
                 }
-                else -> error("Unsupported output format: $outExt")
+                "psd" -> {
+                    println("Attempting to save as PSD...")
+                    ImageIO.write(image, "PSD", outputFile)
+                }
+                "webp" -> {
+                    println("Attempting to save as WEBP...")
+                    val result = ImageIO.write(image, "WEBP", outputFile)
+                    if (!result) {
+                        println("Error: Failed to save as WEBP")
+                    }
+                    result
+                }
+                else -> {
+                    println("Unsupported output format: $outExt")
+                    false
+                }
             }
 
-            recorder.start()
-            recorder.record(frame)
-            recorder.stop()
+            if (isSaved) {
+                println("Image successfully saved as: ${outputFile.absolutePath}")
+            } else {
+                println("Error: Failed to save image.")
+            }
+        } catch (e: Exception) {
+            println("An error occurred: ${e.message}")
+            e.printStackTrace()
         }
     }
 
@@ -142,30 +141,26 @@ class AppViewModel(): ViewModel() {
         _isStatus.value = List(total) { i -> "\uD83D\uDD01 Конвертация: ${inputs[i].name}" }
 
         inputs.indices.map { i ->
-            async(Dispatchers.Default) {
+            async(Dispatchers.IO) {
                 val inF = inputs[i]
                 val outF = outputs[i]
                 val status = try {
                     convertImageSimple(inF, outF)
                     "✅ Успех: ${inF.name}"
                 } catch (e: Exception) {
-                    "❌ Ошибка: ${inF.name}"
+                    "❌ Ошибка: ${inF.name} - ${e.message}"
                 }
-                synchronized(_isStatus) {
-                    // update status list
-                    val list = _isStatus.value.toMutableList()
-                    list[i] = status
-                    _isStatus.value = list
-                    val progress = list.count { it.startsWith("✅") }.toFloat() / total
-                    launch { smoothProgressUpdate(progress) }
+
+                val updatedStatus = _isStatus.value.toMutableList().apply {
+                    this[i] = status
                 }
+                _isStatus.value = updatedStatus
+
+                val progress = updatedStatus.count { it.startsWith("✅") }.toFloat() / total
+                launch { smoothProgressUpdate(progress) }
             }
         }.awaitAll()
     }
-
-
-
-
 
 
 
@@ -201,7 +196,7 @@ class AppViewModel(): ViewModel() {
                         pixelFormat = avutil.AV_PIX_FMT_YUV420P
                         videoBitrate = grabber.videoBitrate.takeIf { it > 0 } ?: 2_000_000
                     }
-                    "webm" -> {
+                    "webm"-> {
                         videoCodec = avcodec.AV_CODEC_ID_VP9
                         audioCodec = avcodec.AV_CODEC_ID_VORBIS
                         pixelFormat = avutil.AV_PIX_FMT_YUVA420P

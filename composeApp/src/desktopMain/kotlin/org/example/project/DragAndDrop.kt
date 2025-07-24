@@ -61,8 +61,8 @@ fun FileDropZone(
                 val validFiles = dropped.filter { file ->
                     if (isImage) {
                         file.extension.lowercase() in listOf(
-                            "jpeg", "jpg", "png", "gif", "tiff", "bmp",
-                            "webp", "avif", "svg", "jp2", "j2k", "ppm", "pgm"
+                            "psd", "bmp", "tif", "tiff", "gif", "png",
+                            "jpg", "jpeg", "webp"
                         )
                     } else {
                         file.extension.lowercase() in listOf(

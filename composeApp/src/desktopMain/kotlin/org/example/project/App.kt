@@ -37,8 +37,8 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
 
     val listFormatsImage = remember {
         mutableStateListOf(
-            "jpeg", "jpg", "png", "gif", "tiff",
-            "webp"
+            "psd", "bmp", "tif", "tiff", "gif", "png",
+            "jpg", "jpeg", "webp"
         )
     }
     val listFormatsVideo = remember {
