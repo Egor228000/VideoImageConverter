@@ -47,14 +47,18 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "org.example.project.MainKt"
-
+        args += listOf("-customArgument")
+        jvmArgs += listOf("-Xmx2G")
         nativeDistributions {
-            targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg)
+            targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "VideoImageConverterPublic"
             packageVersion = "1.0.0"
+
+
             windows {
                 packageVersion = "1.0.0"
                 exePackageVersion = "1.0.0"
+                msiPackageVersion = "1.0.0"
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
             linux {
@@ -68,8 +72,8 @@ compose.desktop {
                 dmgPackageVersion = "1.0.0"
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/iconmac.icns"))
             }
+            modules("java.sql")
             includeAllModules = true
-
 
         }
 
@@ -77,6 +81,7 @@ compose.desktop {
             isEnabled.set(false)
             optimize.set(true)
             obfuscate.set(false)
+            joinOutputJars.set(true)
         }
     }
 
