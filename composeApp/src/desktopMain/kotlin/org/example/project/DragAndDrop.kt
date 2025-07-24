@@ -140,7 +140,7 @@ fun FileDropZone(
                                                 alignment = Alignment.Center
                                             ),
                                             modifier = Modifier
-                                                .size(130.dp)
+                                                .size(80.dp)
                                         )
                                     }
 
