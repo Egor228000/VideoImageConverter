@@ -14,25 +14,31 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
-            implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0-beta04")
-            implementation("com.github.skydoves:landscapist-coil3:2.5.1")
-            implementation("org.bytedeco:javacv-platform:1.5.12")
-            implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
-            implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
+            dependencies {
+                implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
+                implementation("com.twelvemonkeys.imageio:imageio-tiff:3.12.0")
+                implementation("com.twelvemonkeys.imageio:imageio-psd:3.12.0")
+
+                implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0-beta04")
+                implementation("com.github.skydoves:landscapist-coil3:2.5.1")
+                implementation("org.bytedeco:javacv-platform:1.5.12")
+                implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
+                implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+            }
+            commonTest.dependencies {
+                implementation(libs.kotlin.test)
+            }
+            desktopMain.dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutinesSwing)
+            }
         }
     }
 }
@@ -54,13 +60,13 @@ compose.desktop {
             linux {
                 packageVersion = "1.0.0"
                 debPackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/iconlinux.png"))
                 modules("jdk.security.auth")
             }
             macOS {
                 packageVersion = "1.0.0"
                 dmgPackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/iconmac.icns"))
             }
             includeAllModules = true
 
