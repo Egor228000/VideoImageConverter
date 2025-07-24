@@ -43,19 +43,24 @@ compose.desktop {
         mainClass = "org.example.project.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Exe, TargetFormat.Deb)
+            targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg)
             packageName = "VideoImageConverterPublic"
             packageVersion = "1.0.0"
             windows {
                 packageVersion = "1.0.0"
                 exePackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icons.ico"))
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
             linux {
                 packageVersion = "1.0.0"
                 debPackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icons.ico"))
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
                 modules("jdk.security.auth")
+            }
+            macOS {
+                packageVersion = "1.0.0"
+                dmgPackageVersion = "1.0.0"
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
             includeAllModules = true
 
