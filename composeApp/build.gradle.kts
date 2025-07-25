@@ -48,7 +48,8 @@ compose.desktop {
     application {
         mainClass = "org.example.project.MainKt"
         args += listOf("-customArgument")
-        jvmArgs += listOf("-Xmx2G")
+
+        jvmArgs("-Dcompose.jbr=true")
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "VideoImageConverterPublic"
@@ -81,7 +82,7 @@ compose.desktop {
             isEnabled.set(false)
             optimize.set(true)
             obfuscate.set(false)
-            joinOutputJars.set(true)
+
         }
     }
 
