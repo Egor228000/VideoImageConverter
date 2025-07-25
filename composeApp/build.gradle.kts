@@ -52,7 +52,7 @@ compose.desktop {
         jvmArgs("-Dcompose.jbr=true")
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
-            packageName = "VideoImageConverterPublic"
+            packageName = "VideoImageConverter"
             packageVersion = "1.0.0"
 
 
