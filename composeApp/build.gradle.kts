@@ -54,25 +54,13 @@ compose.desktop {
             targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "VideoImageConverter"
             packageVersion = "1.0.0"
-
-
             windows {
                 packageVersion = "1.0.0"
                 exePackageVersion = "1.0.0"
                 msiPackageVersion = "1.0.0"
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
-            linux {
-                packageVersion = "1.0.0"
-                debPackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/iconlinux.png"))
-                modules("jdk.security.auth")
-            }
-            macOS {
-                packageVersion = "1.0.0"
-                dmgPackageVersion = "1.0.0"
-                iconFile.set(project.file("src/desktopMain/composeResources/drawable/iconmac.icns"))
-            }
+
             modules("java.sql")
             includeAllModules = true
 
