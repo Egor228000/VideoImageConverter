@@ -21,7 +21,11 @@ kotlin {
 
                 implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0-beta04")
                 implementation("com.github.skydoves:landscapist-coil3:2.5.1")
-                implementation("org.bytedeco:javacv-platform:1.5.12")
+
+                implementation("org.bytedeco:javacv:1.5.12")
+                implementation("org.bytedeco:ffmpeg:7.1.1-1.5.12")
+                implementation("org.bytedeco:ffmpeg-platform:7.1.1-1.5.12")
+
                 implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
                 implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
                 implementation(compose.runtime)
@@ -61,15 +65,15 @@ compose.desktop {
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
 
-            modules("java.sql")
-            includeAllModules = true
+
 
         }
 
         buildTypes.release.proguard {
             isEnabled.set(false)
             optimize.set(true)
-            obfuscate.set(false)
+            obfuscate.set(true)
+            joinOutputJars.set(true)
 
         }
     }
