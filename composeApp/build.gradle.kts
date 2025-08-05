@@ -57,11 +57,11 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "VideoImageConverter"
-            packageVersion = "1.0.0"
+            packageVersion = "1.5.0"
             windows {
-                packageVersion = "1.0.0"
-                exePackageVersion = "1.0.0"
-                msiPackageVersion = "1.0.0"
+                packageVersion = "1.5.0"
+                exePackageVersion = "1.5.0"
+                msiPackageVersion = "1.5.0"
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
 
