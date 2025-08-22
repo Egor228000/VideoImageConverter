@@ -64,6 +64,12 @@ compose.desktop {
                 msiPackageVersion = "1.5.0"
                 iconFile.set(project.file("src/desktopMain/composeResources/drawable/icon.ico"))
             }
+            linux {
+                packageVersion = "1.5.0"
+                debPackageVersion = "1.5.0"
+                iconFile.set(project.file("src/desktopMain/composeResources/drawable/icons.png"))
+
+            }
 
 
 
