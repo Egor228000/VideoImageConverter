@@ -60,6 +60,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
+            .background(Color.Black)
             .padding(16.dp)
     ) {
         Text(
