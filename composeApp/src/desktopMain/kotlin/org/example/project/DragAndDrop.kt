@@ -66,9 +66,7 @@ fun FileDropZone(
                         )
                     } else {
                         file.extension.lowercase() in listOf(
-                            "mp4", "mkv", "avi", "mov", "flv", "webm",
-                            "wmv", "mpg", "mpeg", "3gp", "ts", "m2ts",
-                            "ogv", "rm", "rmvb"
+                            "mp4", "mkv", "avi", "mov", "webm", "gif"
                         )
                     }
                 }

@@ -8,10 +8,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.mayakapps.compose.windowstyler.WindowBackdrop
-import com.mayakapps.compose.windowstyler.WindowCornerPreference
-import com.mayakapps.compose.windowstyler.WindowFrameStyle
-import com.mayakapps.compose.windowstyler.WindowStyle
+import io.github.kdroidfilter.platformtools.darkmodedetector.windows.setWindowsAdaptiveTitleBar
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import org.jetbrains.compose.resources.painterResource
 import videoimageconverter.composeapp.generated.resources.Res
@@ -30,13 +27,9 @@ fun main() = application {
         icon = painterResource(Res.drawable.icon)
 
     ) {
-        WindowStyle(
-            isDarkTheme = true,
-            backdropType = WindowBackdrop.Mica,
-            frameStyle = WindowFrameStyle(cornerPreference = WindowCornerPreference.ROUNDED),
-        )
+        window.setWindowsAdaptiveTitleBar()
         val dialogSettings = FileKitDialogSettings(this.window)
-        window.minimumSize = Dimension(700, 900)
+        window.minimumSize = Dimension(700, 950)
         val appViewModel = rememberSaveable { AppViewModel() }
         App(appViewModel, dialogSettings)
     }

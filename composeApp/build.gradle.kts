@@ -15,9 +15,8 @@ kotlin {
 
         commonMain.dependencies {
             dependencies {
-                implementation("org.apache.pdfbox:pdfbox:2.0.29")
-                implementation("org.docx4j:docx4j-JAXB-ReferenceImpl:11.4.9")
-                implementation("org.docx4j:docx4j-export-fo:11.4.9")
+                implementation(libs.platformtools.core)
+                implementation(libs.platformtools.darkmodedetector)
 
                 implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
                 implementation("com.twelvemonkeys.imageio:imageio-tiff:3.12.0")
@@ -30,7 +29,6 @@ kotlin {
                 implementation("org.bytedeco:ffmpeg:7.1.1-1.5.12")
                 implementation("org.bytedeco:ffmpeg-platform:7.1.1-1.5.12")
 
-                implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
                 implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
                 implementation(compose.runtime)
                 implementation(compose.foundation)
