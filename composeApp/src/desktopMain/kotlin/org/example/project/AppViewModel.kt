@@ -10,14 +10,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.text.PDFTextStripper
 import org.bytedeco.ffmpeg.global.avcodec
 import org.bytedeco.ffmpeg.global.avutil
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
-import org.docx4j.Docx4J
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileOutputStream
@@ -82,124 +78,52 @@ class AppViewModel(): ViewModel() {
         try {
             val inputExt = inputFile.extension.lowercase()
             val outputExt = outputFile.extension.lowercase()
-            val image: BufferedImage = ImageIO.read(inputFile)
-                ?: error("Cannot read image ${inputFile.name}")
 
-            println("Successfully read image: ${inputFile.absolutePath}")
 
-            val outExt = outputFile.extension.lowercase()
-            println("Saving image as: $outExt")
 
-            if (inputExt in listOf("doc", "docx") && outputExt == "pdf") {
-                val success = convertWordToPdf(inputFile, outputFile)
-                if (!success) println("Ошибка конвертации Word в PDF")
+
+            val imageFormats = listOf("jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "webp")
+
+            if (inputExt !in imageFormats) {
+                println("❌ Unsupported source format for ImageIO: $inputExt")
                 return
             }
 
 
-            if (inputExt == "pdf" && outputExt in listOf("doc", "docx")) {
-                val success = convertPdfToDocx_simple(inputFile, outputFile)
-                if (!success) println("Ошибка конвертации PDF в Word")
+            val image: BufferedImage? = ImageIO.read(inputFile)
+            if (image == null) {
+                println("❌ ERROR: File is not a readable image: ${inputFile.name}")
                 return
             }
 
-            val isSaved = when (outExt) {
-                "jpg", "jpeg" -> {
-                    println("Attempting to save as JPEG...")
-                    ImageIO.write(image, "JPEG", outputFile)
-                }
-                "png" -> {
-                    println("Attempting to save as PNG...")
-                    ImageIO.write(image, "PNG", outputFile)
-                }
-                "gif" -> {
-                    println("Attempting to save as GIF...")
-                    ImageIO.write(image, "GIF", outputFile)
-                }
-                "tiff", "tif" -> {
-                    println("Attempting to save as TIFF...")
-                    ImageIO.write(image, "TIFF", outputFile)
-                }
-                "bmp" -> {
-                    println("Attempting to save as BMP...")
-                    ImageIO.write(image, "BMP", outputFile)
-                }
-                "psd" -> {
-                    println("Attempting to save as PSD...")
-                    ImageIO.write(image, "PSD", outputFile)
-                }
-                "webp" -> {
-                    println("Attempting to save as WEBP...")
-                    val result = ImageIO.write(image, "WEBP", outputFile)
-                    if (!result) {
-                        println("Error: Failed to save as WEBP")
-                    }
-                    result
-                }
+            println("Image successfully read.")
+
+
+            val isSaved = when (outputExt) {
+                "jpg", "jpeg" -> ImageIO.write(image, "JPEG", outputFile)
+                "png" -> ImageIO.write(image, "PNG", outputFile)
+                "gif" -> ImageIO.write(image, "GIF", outputFile)
+                "tiff", "tif" -> ImageIO.write(image, "TIFF", outputFile)
+                "bmp" -> ImageIO.write(image, "BMP", outputFile)
+                "webp" -> ImageIO.write(image, "WEBP", outputFile)
                 else -> {
-                    println("Unsupported output format: $outExt")
+                    println("❌ Unsupported output format: $outputExt")
                     false
                 }
             }
 
             if (isSaved) {
-                println("Image successfully saved as: ${outputFile.absolutePath}")
+                println("✅ Image saved: ${outputFile.absolutePath}")
             } else {
-                println("Error: Failed to save image.")
+                println("❌ Failed to save image.")
             }
+
         } catch (e: Exception) {
-            println("An error occurred: ${e.message}")
+            println("❌ Exception: ${e.message}")
             e.printStackTrace()
         }
     }
 
-    fun convertWordToPdf(inputFile: File, outputFile: File): Boolean {
-        return try {
-            when (inputFile.extension.lowercase()) {
-                "docx" -> convertDocxToPdf(inputFile, outputFile)
-                "doc" -> convertDocToPdf(inputFile, outputFile)
-                else -> false
-            }
-        } catch (e: Exception) {
-            println("Ошибка конвертации: ${e.message}")
-            false
-        }
-    }
-    fun convertDocxToPdf(inputFile: File, outputFile: File): Boolean {
-        return try {
-            val wordMLPackage = WordprocessingMLPackage.load(inputFile)
-
-            FileOutputStream(outputFile).use { output ->
-                Docx4J.toPDF(wordMLPackage, output)
-            }
-            true
-        } catch (e: Exception) {
-            println("Ошибка DOCX->PDF: ${e.message}")
-            e.printStackTrace()
-            false
-        }
-    }
-    private fun convertDocToPdf(inputFile: File, outputFile: File): Boolean {
-        println("Конвертация DOC требует Apache POI: poi-scratchpad")
-        return false
-    }
-
-    fun convertPdfToDocx_simple(inputFile: File, outputFile: File): Boolean {
-        return try {
-            val document = PDDocument.load(inputFile)
-            val stripper = org.apache.pdfbox.text.PDFTextStripper()
-            val text = stripper.getText(document)
-            document.close()
-
-            val wp = WordprocessingMLPackage.createPackage()
-            wp.mainDocumentPart.addParagraphOfText(text)
-            wp.save(outputFile)
-            true
-        } catch (e: Exception) {
-            println("Ошибка PDF->DOCX: ${e.message}")
-            false
-        }
-    }
 
 
     fun convertImagesBatch(inputs: List<File>, outputs: List<File>) = runBlocking {
