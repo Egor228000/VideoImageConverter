@@ -26,7 +26,7 @@ import videoimageconverter.composeapp.generated.resources.downarrow
 import videoimageconverter.composeapp.generated.resources.folder
 import videoimageconverter.composeapp.generated.resources.uparrow
 import java.io.File
-
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
@@ -65,20 +65,20 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(16.dp)
     ) {
         Text(
             "\uD83D\uDCC1 Исходные файлы",
             fontSize = 18.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.primary
         )
         Card(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .weight(0.25f),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(1.dp, Color.White)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
 
         ) {
             Column(
@@ -115,14 +115,14 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
         Text(
             "\uD83D\uDEE0\uFE0F Настройки конвертации",
             fontSize = 18.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.primary
         )
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.28f),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(1.dp, Color.White)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
         ) {
             Row(
                 modifier = Modifier
@@ -162,7 +162,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                     Text(
                         "\uD83D\uDDC2\uFE0F Папка для сохранения",
                         fontSize = 16.sp,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -196,7 +196,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                             Icon(
                                 painterResource(Res.drawable.folder),
                                 null,
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(24.dp)
 
                             )
@@ -209,8 +209,8 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                         unfocusedBorderColor = Color.Transparent,
                         focusedContainerColor = Color.DarkGray,
                         unfocusedContainerColor = Color.DarkGray,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary
 
                     ),
                     shape = RoundedCornerShape(10.dp)
@@ -276,14 +276,14 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
         Text(
             "⏳ Процесс",
             fontSize = 18.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.primary
         )
         Card(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .weight(0.15f),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(1.dp, Color.White)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
 
 
         ) {
@@ -306,7 +306,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                     Text(
                         status,
                         fontSize = 16.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .padding(top = 16.dp)
                     )
@@ -322,7 +322,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                         shape = RoundedCornerShape(10.dp),
                         hoverDurationMillis = 10,
                         unhoverColor = Color.LightGray,
-                        hoverColor = Color.Black
+                        hoverColor = MaterialTheme.colorScheme.primary
                     )
                 )
                 Box(
@@ -384,7 +384,7 @@ fun FormatsList(
         Text(
             text,
             fontSize = 16.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.padding(top = 8.dp))
         ExposedDropdownMenuBox(
@@ -406,14 +406,14 @@ fun FormatsList(
                             Icon(
                                 painterResource(Res.drawable.downarrow),
                                 null,
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(14.dp)
                             )
                         } else {
                             Icon(
                                 painterResource(Res.drawable.uparrow),
                                 null,
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(14.dp)
                             )
 

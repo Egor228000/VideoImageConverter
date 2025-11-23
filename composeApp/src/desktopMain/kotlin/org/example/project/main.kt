@@ -8,8 +8,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import io.github.kdroidfilter.platformtools.darkmodedetector.isSystemInDarkMode
 import io.github.kdroidfilter.platformtools.darkmodedetector.windows.setWindowsAdaptiveTitleBar
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
+import org.example.project.Theme.DarkColors
+import org.example.project.Theme.LightColors
+import org.example.project.Theme.MyAppTheme
 import org.jetbrains.compose.resources.painterResource
 import videoimageconverter.composeapp.generated.resources.Res
 import videoimageconverter.composeapp.generated.resources.icon
@@ -31,6 +35,10 @@ fun main() = application {
         val dialogSettings = FileKitDialogSettings(this.window)
         window.minimumSize = Dimension(700, 950)
         val appViewModel = rememberSaveable { AppViewModel() }
-        App(appViewModel, dialogSettings)
+        MyAppTheme(
+            colorScheme = if (isSystemInDarkMode()) DarkColors else LightColors
+        ) {
+            App(appViewModel, dialogSettings)
+        }
     }
 }

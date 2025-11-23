@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -100,7 +101,7 @@ fun FileDropZone(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isHovering) Color(0xFFE0E0E0) else Color.DarkGray)
+                    .background(if (isHovering) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primaryContainer)
             ) {
 
                 if (selectedFile?.isEmpty() ?: true) {
@@ -113,7 +114,7 @@ fun FileDropZone(
                             text = textTypeFile,
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 } else {
@@ -141,7 +142,6 @@ fun FileDropZone(
                                                 .size(80.dp)
                                         )
                                     }
-
                                 }
 
                                 HorizontalScrollbar(
@@ -153,8 +153,8 @@ fun FileDropZone(
                                         thickness = 10.dp,
                                         shape = RoundedCornerShape(10.dp),
                                         hoverDurationMillis = 10,
-                                        unhoverColor = Color.LightGray,
-                                        hoverColor = Color.Black
+                                        unhoverColor = MaterialTheme.colorScheme.onPrimary,
+                                        hoverColor = MaterialTheme.colorScheme.primary
                                     )
                                 )
 
@@ -173,7 +173,7 @@ fun FileDropZone(
                                         text = name.name.toString(),
                                         textAlign = TextAlign.Center,
                                         maxLines = 1,
-                                       color = Color.White,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontSize = 16.sp
                                     )
                                 }
