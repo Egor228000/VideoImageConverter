@@ -15,6 +15,14 @@ kotlin {
 
         commonMain.dependencies {
             dependencies {
+
+                implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+                implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+                implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+
+                // Драйвер для SQLite
+                implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+
                 implementation(libs.platformtools.core)
                 implementation(libs.platformtools.darkmodedetector)
 
