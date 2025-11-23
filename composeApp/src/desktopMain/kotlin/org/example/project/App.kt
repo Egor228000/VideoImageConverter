@@ -55,7 +55,12 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
     val scope = rememberCoroutineScope()
     val stateVertical = rememberScrollState(0)
 
-
+    val savedFolder by appViewModel.selectedFolder.collectAsState()
+    LaunchedEffect(savedFolder) {
+        savedFolder?.let {
+            selectedFolder = it.name
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -172,6 +177,10 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                                     val folder = appViewModel.openFolderPicker(dialogSettings)
                                     if (folder != null) {
                                         selectedFolder = folder.absolutePath
+                                        appViewModel.saveFolder(
+                                            id = "1",
+                                            name = selectedFolder
+                                        )
                                     }
                                 }
 

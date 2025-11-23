@@ -14,14 +14,62 @@ import org.bytedeco.ffmpeg.global.avcodec
 import org.bytedeco.ffmpeg.global.avutil
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.image.BufferedImage
 import java.io.File
-import java.io.FileOutputStream
 import java.nio.file.Paths
 import javax.imageio.ImageIO
 
 
-class AppViewModel(): ViewModel() {
+object Folder : Table() {
+    val id = varchar("id", 10)
+    val name = varchar("name", length = 50)
+}
+
+class AppViewModel() : ViewModel() {
+
+    private val _selectedFolder = MutableStateFlow<FolderData?>(null)
+    val selectedFolder: StateFlow<FolderData?> = _selectedFolder.asStateFlow()
+
+    data class FolderData(val id: String, val name: String)
+
+    init {
+        Database.connect("jdbc:sqlite:myapp.db", driver = "org.sqlite.JDBC")
+
+        transaction {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(Folder)
+        }
+
+        loadLastFolder()
+    }
+
+    fun saveFolder(id: String, name: String) {
+        transaction {
+            Folder.deleteAll()
+            Folder.insert {
+                it[Folder.id] = id
+                it[Folder.name] = name
+            }
+        }
+        loadLastFolder()
+    }
+
+    private fun loadLastFolder() {
+        val folder = transaction {
+            Folder.selectAll().firstOrNull()?.let {
+                FolderData(
+                    id = it[Folder.id],
+                    name = it[Folder.name]
+                )
+            }
+        }
+        _selectedFolder.value = folder
+    }
+
+
+
     private val _listImage = MutableStateFlow<List<File>>(emptyList())
     val listImage: StateFlow<List<File>> = _listImage.asStateFlow()
     fun addImage(list: List<File>) {
@@ -33,6 +81,7 @@ class AppViewModel(): ViewModel() {
     fun addVideo(list: List<File>) {
         _listVideo.value += list
     }
+
     private val _isStatus = MutableStateFlow<List<String>>(emptyList())
     val isStatus: StateFlow<List<String>> = _isStatus.asStateFlow()
     private val _translationProgress = MutableStateFlow(0f)
@@ -73,13 +122,10 @@ class AppViewModel(): ViewModel() {
     }
 
 
-
     fun convertImageSimple(inputFile: File, outputFile: File) {
         try {
             val inputExt = inputFile.extension.lowercase()
             val outputExt = outputFile.extension.lowercase()
-
-
 
 
             val imageFormats = listOf("jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "webp")
@@ -125,7 +171,6 @@ class AppViewModel(): ViewModel() {
     }
 
 
-
     fun convertImagesBatch(inputs: List<File>, outputs: List<File>) = runBlocking {
         require(inputs.size == outputs.size) { "Input and output lists must match." }
         val total = inputs.size
@@ -155,13 +200,11 @@ class AppViewModel(): ViewModel() {
     }
 
 
-
-
     fun convertVideoSimple(inputFile: File, outputFile: File) = runBlocking {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR)
 
         val ext = outputFile.extension.lowercase()
-        require(ext in listOf("mp4","mkv","avi","mov","webm")) {
+        require(ext in listOf("mp4", "mkv", "avi", "mov", "webm")) {
             "Unsupported format: $ext"
         }
 
@@ -174,7 +217,7 @@ class AppViewModel(): ViewModel() {
                 grabber.imageHeight,
                 grabber.audioChannels
             ).apply {
-                format      = ext
+                format = ext
 
                 when (ext) {
                     "mp4", "mov", "mkv" -> {
@@ -182,13 +225,15 @@ class AppViewModel(): ViewModel() {
                         audioCodec = avcodec.AV_CODEC_ID_AAC
                         pixelFormat = avutil.AV_PIX_FMT_YUV420P
                     }
+
                     "avi" -> {
                         videoCodec = avcodec.AV_CODEC_ID_MPEG4
                         audioCodec = avcodec.AV_CODEC_ID_MP3
                         pixelFormat = avutil.AV_PIX_FMT_YUV420P
                         videoBitrate = grabber.videoBitrate.takeIf { it > 0 } ?: 2_000_000
                     }
-                    "webm"-> {
+
+                    "webm" -> {
                         videoCodec = avcodec.AV_CODEC_ID_VP9
                         audioCodec = avcodec.AV_CODEC_ID_VORBIS
                         pixelFormat = avutil.AV_PIX_FMT_YUVA420P
@@ -209,7 +254,6 @@ class AppViewModel(): ViewModel() {
             grabber.stop()
         }
     }
-
 
 
     fun convertVideosBatch(inputs: List<File>, outputs: List<File>) = runBlocking {
