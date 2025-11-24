@@ -207,8 +207,8 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = Color.DarkGray,
-                        unfocusedContainerColor = Color.DarkGray,
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                         focusedTextColor = MaterialTheme.colorScheme.primary,
                         unfocusedTextColor = MaterialTheme.colorScheme.primary
 
@@ -430,10 +430,10 @@ fun FormatsList(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = Color.DarkGray,
-                    unfocusedContainerColor = Color.DarkGray,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
+                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.primary
 
                 ),
                 shape = RoundedCornerShape(10.dp)
@@ -445,7 +445,9 @@ fun FormatsList(
             ) {
                 listFormats.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = {
+                            Text(option, color = MaterialTheme.colorScheme.primary)
+                               },
                         onClick = {
                             selectedFormat.value = option
                             expanded.value = false
