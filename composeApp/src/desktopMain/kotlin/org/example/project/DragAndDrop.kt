@@ -28,20 +28,32 @@ import com.skydoves.landscapist.coil3.CoilImage
 import java.awt.datatransfer.DataFlavor
 import java.io.File
 
+sealed interface FileType {
+    val extensions: List<String>
+    val promptText: String
+
+    data object Image : FileType {
+        override val extensions = listOf("psd", "bmp", "tif", "tiff", "gif", "png", "jpg", "jpeg", "webp")
+        override val promptText = "Перетащите сюда изображения"
+    }
+
+    data object Video : FileType {
+        override val extensions = listOf("mp4", "mkv", "avi", "mov", "webm", "gif")
+        override val promptText = "Перетащите сюда видео"
+    }
+}
+
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FileDropZone(
+    modifier: Modifier = Modifier,
+    fileType: FileType,
     onFileDropped: (List<File>) -> Unit,
-    selectedFile: List<File>?,
-    isImage: Boolean,
-    textTypeFile: String,
-    weight: Float,
+    selectedFiles: List<File>?,
 ) {
-
     var isHovering by remember { mutableStateOf(false) }
-    val stateVertical = rememberScrollState(0)
 
-    val dropTarget = remember {
+    val dropTarget = remember(fileType, onFileDropped) {
         object : DragAndDropTarget {
             override fun onStarted(event: DragAndDropEvent) {
                 isHovering = true
@@ -53,24 +65,15 @@ fun FileDropZone(
 
             override fun onDrop(event: DragAndDropEvent): Boolean {
                 isHovering = false
-                val dropped = (event.awtTransferable
+                val droppedFiles = (event.awtTransferable
                     .getTransferData(DataFlavor.javaFileListFlavor) as? List<*>)
                     ?.filterIsInstance<File>()
-                    ?: emptyList()
+                    ?: return false
 
-
-                val validFiles = dropped.filter { file ->
-                    if (isImage) {
-                        file.extension.lowercase() in listOf(
-                            "psd", "bmp", "tif", "tiff", "gif", "png",
-                            "jpg", "jpeg", "webp"
-                        )
-                    } else {
-                        file.extension.lowercase() in listOf(
-                            "mp4", "mkv", "avi", "mov", "webm", "gif"
-                        )
-                    }
+                val validFiles = droppedFiles.filter { file ->
+                    file.extension.lowercase() in fileType.extensions
                 }
+
                 if (validFiles.isNotEmpty()) {
                     onFileDropped(validFiles)
                     return true
@@ -79,111 +82,99 @@ fun FileDropZone(
             }
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(16.dp)
 
-    ) {
-        Card(
-            modifier = Modifier
-                .weight(weight)
-                .dragAndDropTarget(
-                    shouldStartDragAndDrop = { true },
-                    target = dropTarget
-                ),
-            border = BorderStroke(
-                width = if (isHovering) 2.dp else 1.dp,
-                color = if (isHovering) Color.Blue else Color.Gray
+    Card(
+        modifier = modifier
+            .dragAndDropTarget(
+                shouldStartDragAndDrop = { true },
+                target = dropTarget
             ),
-
-            ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(if (isHovering) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primaryContainer)
-            ) {
-
-                if (selectedFile.isNullOrEmpty()) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            text = textTypeFile,
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                } else {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        if (isImage) {
-                            Box {
-                                Row(
-                                    modifier = Modifier
-                                        .horizontalScroll(stateVertical)
-                                        .padding(16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                ) {
-                                    selectedFile.forEach { image ->
-                                        CoilImage(
-                                            imageModel = { image.absolutePath },
-                                            imageOptions = ImageOptions(
-                                                contentScale = ContentScale.Crop,
-                                                alignment = Alignment.Center
-                                            ),
-                                            modifier = Modifier
-                                                .size(80.dp)
-                                        )
-                                    }
-                                }
-
-                                HorizontalScrollbar(
-                                    modifier = Modifier.align(Alignment.BottomCenter)
-                                        .fillMaxWidth(),
-                                    adapter = rememberScrollbarAdapter(stateVertical),
-                                    style = ScrollbarStyle(
-                                        minimalHeight = 20.dp,
-                                        thickness = 10.dp,
-                                        shape = RoundedCornerShape(10.dp),
-                                        hoverDurationMillis = 10,
-                                        unhoverColor = MaterialTheme.colorScheme.onPrimary,
-                                        hoverColor = MaterialTheme.colorScheme.primary
-                                    )
-                                )
-
-                            }
-
-
-                        } else {
-                            LazyVerticalGrid(
-                                contentPadding = PaddingValues(16.dp),
-                                columns = GridCells.Adaptive(250.dp),
-                                modifier = Modifier
-                                    .padding(16.dp)
-                            ) {
-                                items(selectedFile) { name ->
-                                    Text(
-                                        text = name.name.toString(),
-                                        textAlign = TextAlign.Center,
-                                        maxLines = 1,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontSize = 16.sp
-                                    )
-                                }
-                            }
-
-                        }
-                    }
+        border = BorderStroke(
+            width = if (isHovering) 2.dp else 1.dp,
+            color = if (isHovering) Color.Blue else Color.Gray
+        ),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (isHovering) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selectedFiles.isNullOrEmpty()) {
+                Text(
+                    text = fileType.promptText,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } else {
+                when (fileType) {
+                    is FileType.Image -> ImagePreview(images = selectedFiles)
+                    is FileType.Video -> VideoList(videos = selectedFiles)
                 }
             }
         }
     }
 }
 
+@Composable
+private fun ImagePreview(images: List<File>) {
+    val scrollState = rememberScrollState()
+    Box {
+        Row(
+            modifier = Modifier
+                .horizontalScroll(scrollState)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            images.forEach { image ->
+                CoilImage(
+                    imageModel = { image.absolutePath },
+                    imageOptions = ImageOptions(
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center
+                    ),
+                    modifier = Modifier.size(80.dp)
+                )
+            }
+        }
+
+        HorizontalScrollbar(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            adapter = rememberScrollbarAdapter(scrollState),
+            style = ScrollbarStyle(
+                minimalHeight = 20.dp,
+                thickness = 10.dp,
+                shape = RoundedCornerShape(10.dp),
+                hoverDurationMillis = 10,
+                unhoverColor = MaterialTheme.colorScheme.onPrimary,
+                hoverColor = MaterialTheme.colorScheme.primary
+            )
+        )
+    }
+}
+
+@Composable
+private fun VideoList(videos: List<File>) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(250.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(videos) { video ->
+            Text(
+                text = video.name,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+    }
+}

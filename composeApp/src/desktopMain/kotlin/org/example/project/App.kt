@@ -82,35 +82,22 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
 
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .weight(0.30f)
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 FileDropZone(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    fileType = FileType.Image,
                     onFileDropped = { files -> appViewModel.addImage(files) },
-                    selectedFile = listImage,
-                    isImage = true,
-                    textTypeFile = "Перетащите изображение",
-                    weight = 0.25f
+                    selectedFiles = listImage
                 )
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .weight(0.30f)
-                    .fillMaxSize()
-            ) {
                 FileDropZone(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    fileType = FileType.Video,
                     onFileDropped = { files -> appViewModel.addVideo(files) },
-                    selectedFile = listVideo,
-                    isImage = false,
-                    textTypeFile = "Перетащите видео",
-                    weight = 0.25f
+                    selectedFiles = listVideo
                 )
             }
-
-
         }
         Text(
             "\uD83D\uDEE0\uFE0F Настройки конвертации",
