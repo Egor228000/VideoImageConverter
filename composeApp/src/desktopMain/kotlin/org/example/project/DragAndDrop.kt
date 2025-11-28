@@ -104,7 +104,7 @@ fun FileDropZone(
                     .background(if (isHovering) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primaryContainer)
             ) {
 
-                if (selectedFile?.isEmpty() ?: true) {
+                if (selectedFile.isNullOrEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -186,3 +186,4 @@ fun FileDropZone(
         }
     }
 }
+
