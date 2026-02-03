@@ -27,6 +27,9 @@ import videoimageconverter.composeapp.generated.resources.folder
 import videoimageconverter.composeapp.generated.resources.uparrow
 import java.io.File
 import androidx.compose.material3.MaterialTheme
+import org.jetbrains.compose.resources.stringResource
+import videoimageconverter.composeapp.generated.resources.conversion_settings
+import videoimageconverter.composeapp.generated.resources.source_files
 
 @Composable
 fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
@@ -69,7 +72,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
             .padding(16.dp)
     ) {
         Text(
-            "\uD83D\uDCC1 Исходные файлы",
+            text = stringResource(resource = Res.string.source_files),
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.primary
         )
@@ -100,7 +103,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
             }
         }
         Text(
-            "\uD83D\uDEE0\uFE0F Настройки конвертации",
+            text = stringResource(resource = Res.string.conversion_settings),
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.primary
         )
