@@ -53,7 +53,9 @@ kotlin {
         }
     }
 }
-
+tasks.named("hotRunDesktop", JavaExec::class) {
+    jvmArgs("-Dskiko.renderApi=SOFTWARE")
+}
 
 compose.desktop {
     application {
