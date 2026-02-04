@@ -28,7 +28,11 @@ import videoimageconverter.composeapp.generated.resources.uparrow
 import java.io.File
 import androidx.compose.material3.MaterialTheme
 import org.jetbrains.compose.resources.stringResource
+import videoimageconverter.composeapp.generated.resources.Video_format
 import videoimageconverter.composeapp.generated.resources.conversion_settings
+import videoimageconverter.composeapp.generated.resources.folder_to_save
+import videoimageconverter.composeapp.generated.resources.image_format
+import videoimageconverter.composeapp.generated.resources.process
 import videoimageconverter.composeapp.generated.resources.source_files
 
 @Composable
@@ -125,7 +129,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                         expanded = openListImage,
                         listFormats = listFormatsImage,
                         selectedFormat = selectedFormatImage,
-                        text = "\uD83C\uDF04 Формат изображения"
+                        text = stringResource(resource = Res.string.image_format),
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
@@ -134,8 +138,8 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                         expanded = openListVideo,
                         listFormats = listFormatsVideo,
                         selectedFormat = selectedFormatVideo,
-                        text = "\uD83C\uDFAC Формат видео"
-                    )
+                        text = stringResource(resource = Res.string.Video_format),
+                        )
                 }
             }
             Column(
@@ -150,7 +154,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        "\uD83D\uDDC2\uFE0F Папка для сохранения",
+                        text = stringResource(resource = Res.string.folder_to_save),
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -264,7 +268,7 @@ fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {
             }
         }
         Text(
-            "⏳ Процесс",
+            text = stringResource(resource = Res.string.process),
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.primary
         )
