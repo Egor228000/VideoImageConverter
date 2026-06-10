@@ -20,7 +20,6 @@ import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skiko.Cursor
 import videoimageconverter.composeapp.generated.resources.Res
 import videoimageconverter.composeapp.generated.resources.downarrow
 import videoimageconverter.composeapp.generated.resources.folder
@@ -34,6 +33,7 @@ import videoimageconverter.composeapp.generated.resources.folder_to_save
 import videoimageconverter.composeapp.generated.resources.image_format
 import videoimageconverter.composeapp.generated.resources.process
 import videoimageconverter.composeapp.generated.resources.source_files
+import java.awt.Cursor
 
 @Composable
 fun App(appViewModel: AppViewModel, dialogSettings: FileKitDialogSettings) {

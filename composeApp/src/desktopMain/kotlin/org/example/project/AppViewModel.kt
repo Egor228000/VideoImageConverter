@@ -14,8 +14,15 @@ import org.bytedeco.ffmpeg.global.avcodec
 import org.bytedeco.ffmpeg.global.avutil
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.Database.Companion.connect
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.deleteAll
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.awt.image.BufferedImage
 import java.io.File
 import java.nio.file.Paths
@@ -35,7 +42,7 @@ class AppViewModel() : ViewModel() {
     data class FolderData(val id: String, val name: String)
 
     init {
-        Database.connect("jdbc:sqlite:myapp.db", driver = "org.sqlite.JDBC")
+        connect("jdbc:sqlite:myapp.db", driver = "org.sqlite.JDBC")
 
         transaction {
             addLogger(StdOutSqlLogger)
@@ -113,10 +120,10 @@ class AppViewModel() : ViewModel() {
         }
 
         val picked = FileKit.openDirectoryPicker(
-            title = "Выберите папку",
             directory = PlatformFile(downloads.absolutePath),
             dialogSettings = dialogSettings
         )
+
 
         return picked?.path?.let { File(it) }
     }

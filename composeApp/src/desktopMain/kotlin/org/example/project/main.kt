@@ -32,7 +32,7 @@ fun main() = application {
 
     ) {
         window.setWindowsAdaptiveTitleBar()
-        val dialogSettings = FileKitDialogSettings(this.window)
+        val dialogSettings = FileKitDialogSettings()
         window.minimumSize = Dimension(700, 950)
         val appViewModel = rememberSaveable { AppViewModel() }
         MyAppTheme(
