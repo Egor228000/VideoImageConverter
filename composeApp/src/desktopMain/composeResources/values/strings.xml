@@ -1,10 +1,17 @@
 <resources>
-    <string name="source_files">📁 Исходные файлы</string>
-    <string name="conversion_settings">🛠️ Настройки конвертации</string>
+    <string name="source_files">Исходные файлы</string>
+    <string name="conversion_settings">Настройки конвертации</string>
 
-    <string name="image_format">🌄 Формат изображения</string>
-    <string name="Video_format">🎬 Формат видео</string>
+    <string name="image_format">Формат изображения</string>
+    <string name="Video_format">Формат видео</string>
 
-    <string name="folder_to_save">🗂️ Папка для сохранения</string>
-    <string name="process">⏳ Процесс</string>
+    <string name="folder_to_save">Папка для сохранения</string>
+    <string name="process">Процесс</string>
+
+    <string name="image_text">Перетащите сюда изображения</string>
+    <string name="image_type">PNG, JPG, WEBP</string>
+
+    <string name="video_text">Перетащите сюда видео</string>
+    <string name="video_type"> MP4, AVI, MOV, WEBM, GIF</string>
+
 </resources>
