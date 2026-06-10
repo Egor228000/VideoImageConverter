@@ -36,7 +36,7 @@ fun main() = application {
         window.minimumSize = Dimension(700, 950)
         val appViewModel = rememberSaveable { AppViewModel() }
         MyAppTheme(
-            colorScheme = if (isSystemInDarkMode()) DarkColors else LightColors
+            colorScheme =  DarkColors
         ) {
             App(appViewModel, dialogSettings)
         }

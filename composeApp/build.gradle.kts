@@ -16,28 +16,25 @@ kotlin {
         commonMain.dependencies {
             dependencies {
 
-                implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-                implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
-                implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
-
-                // Драйвер для SQLite
-                implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+                implementation("org.jetbrains.exposed:exposed-core:1.3.0")
+                implementation("org.jetbrains.exposed:exposed-dao:1.3.0")
+                implementation("org.jetbrains.exposed:exposed-jdbc:1.3.0")
+                implementation("org.xerial:sqlite-jdbc:3.53.2.0")
 
                 implementation(libs.platformtools.core)
                 implementation(libs.platformtools.darkmodedetector)
 
-                implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
-                implementation("com.twelvemonkeys.imageio:imageio-tiff:3.12.0")
-                implementation("com.twelvemonkeys.imageio:imageio-psd:3.12.0")
+                implementation("com.twelvemonkeys.imageio:imageio-webp:3.13.1")
+                implementation("com.twelvemonkeys.imageio:imageio-tiff:3.13.1")
 
-                implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0-beta04")
-                implementation("com.github.skydoves:landscapist-coil3:2.5.1")
+                implementation("io.github.vinceglb:filekit-dialogs-compose:0.14.1")
+                implementation("com.github.skydoves:landscapist-coil3:2.9.5")
 
                 implementation("org.bytedeco:javacv:1.5.12")
                 implementation("org.bytedeco:ffmpeg:7.1.1-1.5.12")
                 implementation("org.bytedeco:ffmpeg-platform:7.1.1-1.5.12")
 
-                implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0-alpha02")
+                implementation("org.jetbrains.compose.material3:material3-desktop:1.9.0")
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.ui)
