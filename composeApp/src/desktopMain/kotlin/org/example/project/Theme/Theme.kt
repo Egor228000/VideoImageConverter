@@ -7,37 +7,16 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val LightColors = lightColorScheme(
-     primary = Color.Black, // Оглавление
-     onPrimary = Color(0xFF8B8B8B), // Вспомогательный текст
-     primaryContainer = Color(0xFFD7D7D7), // Карточка
-     onPrimaryContainer = Color(0xFFBA85FA), // Акцентный цвет
-     secondary = Color.White,// Фон
-     onSecondary = Color.White, // Куб
-    secondaryContainer = Color(0xFFE8DEF8),
-    onSecondaryContainer = Color(0xFF1D192B),
-    tertiary = Color(0xFF7D5260),
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFFFD8E4),
-    onTertiaryContainer = Color(0xFF31111D),
-    background = Color(0xFFFFFBFE),
-    onBackground = Color(0xFF1C1B1F),
-    surface = Color(0xFFFFFBFE),
-    onSurface = Color(0xFF1C1B1F),
-    error = Color(0xFFB3261E),
-    onError = Color.White
-)
-
  val DarkColors = darkColorScheme(
     primary = Color.White, // Оглавление
-    onPrimary = Color(0xFF9E9E9E), // Вспомогательный текст
-    primaryContainer = Color(0xFF282828), // Карточка
-    onPrimaryContainer = Color(0xFFBA85FA), // Акцентный цвет
-    secondary = Color.Black,// Фон
+    onPrimary = Color(145,165,167), // Вспомогательный текст
+    primaryContainer = Color(5,11,28), // Карточка
+    onPrimaryContainer = Color(0xFF3D2626), // Акцентный цвет
+    secondary = Color(2,6,23),// Фон
     onSecondary = Color.Black, // Куб
-    secondaryContainer = Color(0xFF4A4458),
-    onSecondaryContainer = Color(0xFFE8DEF8),
-    tertiary = Color(0xFFEFB8C8),
+    secondaryContainer = Color(59,208,151), // Кнопка Convert
+    onSecondaryContainer = Color(194,139,134), // Кнопка ОТмена
+    tertiary = Color(19,27,46), // Карточкак расширение
     onTertiary = Color(0xFF492532),
     tertiaryContainer = Color(0xFF633B48),
     onTertiaryContainer = Color(0xFFFFD8E4),
