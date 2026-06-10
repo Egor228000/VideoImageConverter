@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -20,26 +17,28 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import java.awt.datatransfer.DataFlavor
 import java.io.File
 
 sealed interface FileType {
     val extensions: List<String>
-    val promptText: String
 
     data object Image : FileType {
-        override val extensions = listOf("psd", "bmp", "tif", "tiff", "gif", "png", "jpg", "jpeg", "webp")
-        override val promptText = "Перетащите сюда изображения"
+        override val extensions = listOf("png", "jpg", "webp")
     }
 
     data object Video : FileType {
-        override val extensions = listOf("mp4", "mkv", "avi", "mov", "webm", "gif")
-        override val promptText = "Перетащите сюда видео"
+        override val extensions = listOf("mp4", "avi", "mov", "webm", "gif")
     }
 }
 
@@ -50,6 +49,10 @@ fun FileDropZone(
     fileType: FileType,
     onFileDropped: (List<File>) -> Unit,
     selectedFiles: List<File>?,
+    textType: StringResource,
+    textDescription: StringResource,
+    iconType: DrawableResource,
+    iconColor: Color,
 ) {
     var isHovering by remember { mutableStateOf(false) }
 
@@ -90,27 +93,47 @@ fun FileDropZone(
                 target = dropTarget
             ),
         border = BorderStroke(
-            width = if (isHovering) 2.dp else 1.dp,
-            color = if (isHovering) Color.Blue else Color.Gray
+            width = if (isHovering) 0.5.dp else 0.5.dp,
+            color = if (isHovering) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f),
         ),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isHovering) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primaryContainer),
+                .background(if (isHovering) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            if (selectedFiles.isNullOrEmpty()) {
-                Text(
-                    text = fileType.promptText,
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            } else {
-                when (fileType) {
-                    is FileType.Image -> ImagePreview(images = selectedFiles)
-                    is FileType.Video -> VideoList(videos = selectedFiles)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+
+                if (selectedFiles.isNullOrEmpty()) {
+                    Icon(
+                        painter = painterResource(
+                            iconType
+                        ),
+                        modifier = Modifier.size(50.dp),
+                        tint = iconColor,
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = stringResource(resource = textType),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(resource = textDescription),
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.W400
+                    )
+                } else {
+                    when (fileType) {
+                        is FileType.Image -> ImagePreview(images = selectedFiles)
+                        is FileType.Video -> VideoList(videos = selectedFiles)
+                    }
                 }
             }
         }

@@ -24,8 +24,7 @@ kotlin {
                 implementation(libs.platformtools.core)
                 implementation(libs.platformtools.darkmodedetector)
 
-                implementation("com.twelvemonkeys.imageio:imageio-webp:3.13.1")
-                implementation("com.twelvemonkeys.imageio:imageio-tiff:3.13.1")
+                implementation("org.sejda.imageio:webp-imageio:0.1.6")
 
                 implementation("io.github.vinceglb:filekit-dialogs-compose:0.14.1")
                 implementation("com.github.skydoves:landscapist-coil3:2.9.5")
