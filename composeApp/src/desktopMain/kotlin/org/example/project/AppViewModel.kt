@@ -131,52 +131,63 @@ class AppViewModel() : ViewModel() {
 
     fun convertImageSimple(inputFile: File, outputFile: File) {
         try {
-            val inputExt = inputFile.extension.lowercase()
+            ImageIO.scanForPlugins()
+
             val outputExt = outputFile.extension.lowercase()
 
-
-            val imageFormats = listOf("jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "webp")
-
-            if (inputExt !in imageFormats) {
-                println("❌ Unsupported source format for ImageIO: $inputExt")
-                return
-            }
-
-
-            val image: BufferedImage? = ImageIO.read(inputFile)
+            val image = ImageIO.read(inputFile)
             if (image == null) {
                 println("❌ ERROR: File is not a readable image: ${inputFile.name}")
                 return
             }
 
-            println("Image successfully read.")
+            println("✅ Image successfully read: ${inputFile.name}")
 
+            println(
+                "Доступные форматы для записи: ${
+                    ImageIO.getWriterFormatNames().distinct().sorted()
+                }"
+            )
 
-            val isSaved = when (outputExt) {
-                "jpg", "jpeg" -> ImageIO.write(image, "JPEG", outputFile)
-                "png" -> ImageIO.write(image, "PNG", outputFile)
-                "gif" -> ImageIO.write(image, "GIF", outputFile)
-                "tiff", "tif" -> ImageIO.write(image, "TIFF", outputFile)
-                "bmp" -> ImageIO.write(image, "BMP", outputFile)
-                "webp" -> ImageIO.write(image, "WEBP", outputFile)
+            when (outputExt) {
+                "jpg" -> {
+                    ImageIO.write(image, "JPEG", outputFile)
+                }
+
+                "png" -> {
+                    ImageIO.write(image, "PNG", outputFile)
+                }
+
+                "webp" -> {
+                    val writers = ImageIO.getImageWritersByMIMEType("image/webp")
+
+                    if (!writers.hasNext()) {
+                        println("❌ WebP writer not found")
+                        return
+                    }
+
+                    val writer = writers.next()
+
+                    ImageIO.createImageOutputStream(outputFile).use { ios ->
+                        writer.output = ios
+                        writer.write(image)
+                        writer.dispose()
+                    }
+                }
+
                 else -> {
                     println("❌ Unsupported output format: $outputExt")
-                    false
+                    return
                 }
             }
 
-            if (isSaved) {
-                println("✅ Image saved: ${outputFile.absolutePath}")
-            } else {
-                println("❌ Failed to save image.")
-            }
+            println("✅ Image saved: ${outputFile.absolutePath}")
 
         } catch (e: Exception) {
             println("❌ Exception: ${e.message}")
             e.printStackTrace()
         }
     }
-
 
     fun convertImagesBatch(inputs: List<File>, outputs: List<File>) = runBlocking {
         require(inputs.size == outputs.size) { "Input and output lists must match." }
@@ -211,51 +222,84 @@ class AppViewModel() : ViewModel() {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR)
 
         val ext = outputFile.extension.lowercase()
-        require(ext in listOf("mp4", "mkv", "avi", "mov", "webm")) {
+
+        require(ext in listOf("mp4", "avi", "mov", "gif")) {
             "Unsupported format: $ext"
         }
 
         FFmpegFrameGrabber(inputFile.absolutePath).use { grabber ->
             grabber.start()
 
+            val audioChannels = if (ext == "gif") 0 else grabber.audioChannels
+
             FFmpegFrameRecorder(
                 outputFile.absolutePath,
                 grabber.imageWidth,
                 grabber.imageHeight,
-                grabber.audioChannels
-            ).apply {
-                format = ext
+                audioChannels
+            ).use { recorder ->
+
+                recorder.format = ext
+
+                recorder.frameRate =
+                    if (ext == "gif")
+                        minOf(grabber.frameRate, 15.0)
+                    else
+                        grabber.frameRate
+
+                if (grabber.videoBitrate > 0) {
+                    recorder.videoBitrate = grabber.videoBitrate
+                }
 
                 when (ext) {
-                    "mp4", "mov", "mkv" -> {
-                        videoCodec = avcodec.AV_CODEC_ID_H264
-                        audioCodec = avcodec.AV_CODEC_ID_AAC
-                        pixelFormat = avutil.AV_PIX_FMT_YUV420P
+                    "mp4", "mov" -> {
+                        recorder.videoCodec = avcodec.AV_CODEC_ID_H264
+                        recorder.audioCodec = avcodec.AV_CODEC_ID_AAC
+                        recorder.pixelFormat = avutil.AV_PIX_FMT_YUV420P
+
+                        if (grabber.audioChannels > 0) {
+                            recorder.sampleRate = grabber.sampleRate
+                            recorder.audioBitrate =
+                                maxOf(grabber.audioBitrate, 128_000)
+                        }
                     }
 
                     "avi" -> {
-                        videoCodec = avcodec.AV_CODEC_ID_MPEG4
-                        audioCodec = avcodec.AV_CODEC_ID_MP3
-                        pixelFormat = avutil.AV_PIX_FMT_YUV420P
-                        videoBitrate = grabber.videoBitrate.takeIf { it > 0 } ?: 2_000_000
+                        recorder.videoCodec = avcodec.AV_CODEC_ID_MPEG4
+
+                        // Вместо MP3 часто лучше работает PCM
+                        recorder.audioCodec = avcodec.AV_CODEC_ID_PCM_S16LE
+
+                        recorder.pixelFormat = avutil.AV_PIX_FMT_YUV420P
+
+                        if (grabber.audioChannels > 0) {
+                            recorder.sampleRate = grabber.sampleRate
+                        }
                     }
 
-                    "webm" -> {
-                        videoCodec = avcodec.AV_CODEC_ID_VP9
-                        audioCodec = avcodec.AV_CODEC_ID_VORBIS
-                        pixelFormat = avutil.AV_PIX_FMT_YUVA420P
-                        setAudioOption("flags", "+global_header")
+                    "gif" -> {
+                        recorder.format = "gif"
+                        recorder.videoCodec = avcodec.AV_CODEC_ID_GIF
+                        recorder.pixelFormat = avutil.AV_PIX_FMT_RGB8
                     }
+                }
 
+                recorder.start()
+
+                while (true) {
+                    val frame = grabber.grab() ?: break
+
+                    if (ext == "gif") {
+                        if (frame.image != null) {
+                            recorder.record(frame)
+                        }
+                    } else {
+                        recorder.timestamp = grabber.timestamp
+                        recorder.record(frame)
+                    }
                 }
-            }.use { rec ->
-                rec.start()
-                var frame = grabber.grab()
-                while (frame != null) {
-                    rec.record(frame)
-                    frame = grabber.grab()
-                }
-                rec.stop()
+
+                recorder.stop()
             }
 
             grabber.stop()
