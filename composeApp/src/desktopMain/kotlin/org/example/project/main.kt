@@ -20,7 +20,7 @@ import java.awt.Dimension
 fun main() = application {
     val state = rememberWindowState(
         position = WindowPosition(Alignment.Center),
-        size = DpSize(700.dp, 900.dp)
+        size = DpSize(600.dp, 950.dp)
     )
     Window(
         onCloseRequest = ::exitApplication,
@@ -31,7 +31,7 @@ fun main() = application {
     ) {
         window.setWindowsAdaptiveTitleBar()
         val dialogSettings = FileKitDialogSettings()
-        window.minimumSize = Dimension(700, 950)
+        window.minimumSize = Dimension(600, 950)
         val appViewModel = rememberSaveable { AppViewModel() }
         MyAppTheme(
             colorScheme =  DarkColors
